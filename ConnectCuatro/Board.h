@@ -18,10 +18,6 @@ struct Piece {
 	int pos_y;
 };
 
-struct testing {
-	int x;
-};
-
 class Board {
 public:
 
@@ -31,16 +27,22 @@ public:
 	// getters
 	int getBoardX() const;
 	int getBoardY() const;
+	int getBoardXpixels() const;
+	sf::RectangleShape getBoard() const;
 	Piece* getPieces() const;
+	int positionToIndex(int column, int row); 
 
 	// setters
 	void setPieceColor(Piece& piece);
+
 	// other
-	void drawBoard();
-
 	int getColumnHover(int mouse_x);
-	void hoverPiece(Piece currPiece, int mouse_x);
+	void hoverPiece(Piece& currPiece, int mouse_x);
 
+	int checkValidDrop(int column);
+	void dropPiece(Piece& currPiece, int column, int row);
+
+	void drawBoard();
 
 
 private:
@@ -48,6 +50,7 @@ private:
 	// dimensions of the board
 	int _boardX;
 	int _boardY;
+	int _boardXpixels;
 
 	sf::RectangleShape _board;
 	Piece* _pieces; // array to hold all of the pieces

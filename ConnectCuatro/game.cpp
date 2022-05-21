@@ -17,8 +17,10 @@ Game::Game(sf::RenderWindow& window) : _window(window) {
 void Game::run() {
 
 	Board gameBoard(_window);
+	Piece* pieces = gameBoard.getPieces();
 	int mouse_x = 0; // x-position of the mouse
 	int colHover = 0; // corresponding column position of mouse
+	int validRow = 0;
 
 	while (_window.isOpen()) {
 		sf::Event event;
@@ -31,7 +33,28 @@ void Game::run() {
 
 			case event.MouseMoved:
 				mouse_x = event.mouseMove.x;
-				//cout << mouse_x << endl;
+				// set up hovering piece
+				colHover = gameBoard.getColumnHover(mouse_x); // current piece to be dropped
+				gameBoard.hoverPiece(_hoverPiece, colHover);
+
+				break;
+			
+			case event.MouseButtonPressed:
+				// for dropping a piece
+				if (mouse_x < gameBoard.getBoardXpixels()) { // mouse is within board frame; dropping event
+					// find row in the column to drop
+					validRow = gameBoard.checkValidDrop(colHover);
+					cout << "VALID ROW: " << validRow << endl;
+					if (validRow != -1) {
+						int posIndex = gameBoard.positionToIndex(colHover, validRow);
+						//gameBoard.dropPiece(pieces[posIndex], colHover, validRow); // redundant? already know the (x,y) position and changing its color in next line
+						pieces[posIndex].color = _hoverPiece.color;
+					}
+					else {
+						cout << "Not valid column on the board" << endl;
+					}
+				}
+
 				break;
 
 			default:
@@ -39,13 +62,11 @@ void Game::run() {
 			}
 		}
 
-		_window.clear(sf::Color::Black);
-
-		colHover = gameBoard.getColumnHover(mouse_x);
-
+		_window.clear();
+		
 		// draw everything
 		gameBoard.drawBoard();
-		gameBoard.hoverPiece(_hoverPiece, colHover);
+		_window.draw(_hoverPiece.coin);
 
 		// end current frame
 		_window.display();
