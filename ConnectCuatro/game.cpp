@@ -44,11 +44,18 @@ void Game::run() {
 				if (mouse_x < gameBoard.getBoardXpixels()) { // mouse is within board frame; dropping event
 					// find row in the column to drop
 					validRow = gameBoard.checkValidDrop(colHover);
-					cout << "VALID ROW: " << validRow << endl;
 					if (validRow != -1) {
 						int posIndex = gameBoard.positionToIndex(colHover, validRow);
 						//gameBoard.dropPiece(pieces[posIndex], colHover, validRow); // redundant? already know the (x,y) position and changing its color in next line
 						pieces[posIndex].color = _hoverPiece.color;
+						if (_hoverPiece.color == YELLOW) {
+							// YELLOW TO RED
+							_hoverPiece.color = RED;
+						}
+						else {
+							_hoverPiece.color = YELLOW;
+						}
+						
 					}
 					else {
 						cout << "Not valid column on the board" << endl;

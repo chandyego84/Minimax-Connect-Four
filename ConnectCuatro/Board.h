@@ -6,9 +6,9 @@
 using namespace std;
 
 enum PieceColor {
-	NONE,
 	RED,
-	YELLOW
+	YELLOW,
+	NONE
 };
 
 struct Piece {
