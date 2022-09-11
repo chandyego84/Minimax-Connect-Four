@@ -7,7 +7,7 @@ public:
 	Game(sf::RenderWindow& window);
 
 	void run();
-
+	bool CheckWin(Board gameBoard, int arrPosition);
 
 private:
 	sf::RenderWindow& _window;
