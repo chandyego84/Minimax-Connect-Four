@@ -19,7 +19,6 @@ bool Game::CheckWin(Board gameBoard, int arrPosition) {
 	
 	bool isWon = false;
 	Piece* pieces = gameBoard.getPieces();
-	int streak = 0; // needs 4 for a win
 
 	// (x,y) position of the dropped piece
 	int droppedCol = pieces[arrPosition].pos_x;
@@ -31,12 +30,12 @@ bool Game::CheckWin(Board gameBoard, int arrPosition) {
 
 	int checkIterator = 0;
 	// vertically down
-	while (droppedRow + checkIterator <= 6 && checkIterator < 4) { // make the 4 checks as long as within board frame
+	while (droppedRow + checkIterator < 6 && checkIterator < 4) { // make the 4 checks as long as within board frame
 		currIndex = gameBoard.positionToIndex(droppedCol, droppedRow + checkIterator);
 		if (pieces[currIndex].color == pieces[arrPosition].color) {
 			// matching slot add to streak
-			cout << "+1" << endl;
 			checkIterator++;
+			cout << checkIterator << endl;
 		}
 		else {
 			// mismatch, stop checking
@@ -48,9 +47,44 @@ bool Game::CheckWin(Board gameBoard, int arrPosition) {
 		return true;
 	}
 
+	// horizontally left
+	while (droppedCol - checkIterator >= 0 && checkIterator < 4) { // make the 4 checks as long as within board frame
+		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator, droppedRow);
+		if (pieces[currIndex].color == pieces[arrPosition].color) {
+			// matching slot, add to streak
+			checkIterator++;
+		}
+		else {
+			// mismatch, stop checking
+			break;
+		}
+	}
+	if (checkIterator == 4) {
+		// win
+		return true;
+	}
+
+	checkIterator = 0;
+	// horizontal right
+	while (droppedCol + checkIterator < 7 && checkIterator < 4) { // make the 4 checks as long as within board frame
+		currIndex = gameBoard.positionToIndex(droppedCol + checkIterator, droppedRow);
+		if (pieces[currIndex].color == pieces[arrPosition].color) {
+			// matching slot, add to streak
+			checkIterator++;
+		}
+		else {
+			// mismatch, stop checking
+			break;
+		}
+	}
+	if (checkIterator == 4) {
+		// win
+		return true;
+	}
+
 	checkIterator = 0;
 	// down-diagonal left
-	while (droppedRow + checkIterator <= 6 && droppedCol - checkIterator >= 0 && checkIterator < 4) { // make the 4 checks as long as within board frame
+	while (droppedRow + checkIterator < 6 && droppedCol - checkIterator >= 0 && checkIterator < 4) { // make the 4 checks as long as within board frame
 		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator, droppedRow + checkIterator);
 		if (pieces[currIndex].color == pieces[arrPosition].color) {
 			// matching slot, add to streak
@@ -68,7 +102,7 @@ bool Game::CheckWin(Board gameBoard, int arrPosition) {
 
 	checkIterator = 0;
 	// down-diagonal right
-	while (droppedRow + checkIterator <= 6 && droppedCol + checkIterator <= 5 && checkIterator < 4) { // make the 4 checks as long as within board frame
+	while (droppedRow + checkIterator < 6 && droppedCol + checkIterator < 7 && checkIterator < 4) { // make the 4 checks as long as within board frame
 		currIndex = gameBoard.positionToIndex(droppedCol + checkIterator, droppedRow + checkIterator);
 		if (pieces[currIndex].color == pieces[arrPosition].color) {
 			// matching slot, add to streak
@@ -104,7 +138,7 @@ bool Game::CheckWin(Board gameBoard, int arrPosition) {
 
 	checkIterator = 0;
 	// up-diagonal right
-	while (droppedRow - checkIterator >= 0 && droppedCol + checkIterator <= 5 && checkIterator < 4) {
+	while (droppedRow - checkIterator >= 0 && droppedCol + checkIterator < 7 && checkIterator < 4) {
 		currIndex = gameBoard.positionToIndex(droppedRow - checkIterator, droppedCol + checkIterator);
 		if (pieces[currIndex].color == pieces[arrPosition].color) {
 			// matching slot, add to streak
@@ -156,12 +190,11 @@ void Game::run() {
 				if (mouse_x < gameBoard.getBoardXpixels()) { // mouse is within board frame; dropping event
 					// find row in the column to drop
 					validRow = gameBoard.checkValidDrop(colHover);
-					if (validRow != -1) {
+					if (validRow) {
 						int posIndex = gameBoard.positionToIndex(colHover, validRow);
 						//gameBoard.dropPiece(pieces[posIndex], colHover, validRow); // redundant? already know the (x,y) position and changing its color in next line
 						pieces[posIndex].color = _hoverPiece.color;
 						if (_hoverPiece.color == YELLOW) {
-							// YELLOW TO RED
 							_hoverPiece.color = RED;
 						}
 						else {
