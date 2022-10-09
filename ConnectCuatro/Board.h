@@ -20,9 +20,11 @@ struct Piece {
 
 class Board {
 public:
+	static const int WIDTH = 7;	// width of the board
+	static const int HEIGHT = 6; // length of the board
 
 	// regular connect-4 board of 7x6
-	Board(sf::RenderWindow& window, int boardX = 7, int boardY = 6);
+	Board(sf::RenderWindow& window, int boardX = WIDTH, int boardY = HEIGHT);
 
 	// getters
 	int getBoardX() const;
@@ -30,16 +32,17 @@ public:
 	int getBoardXpixels() const;
 	sf::RectangleShape getBoard() const;
 	Piece* getPieces() const;
-	int positionToIndex(int column, int row); 
+	int positionToIndex(int column, int row) const; 
 
 	// setters
 	void setPieceColor(Piece& piece);
 
 	// other
-	int getColumnHover(int mouse_x);
+	int getColumnHover(int mouse_x) const;
 	void hoverPiece(Piece& currPiece, int mouse_x);
 
-	int checkValidDrop(int column);
+	bool checkValidDrop(int column) const;
+	int findValidRow(int column) const;
 	void dropPiece(Piece& currPiece, int column, int row);
 
 	void drawBoard();
@@ -53,5 +56,6 @@ private:
 	int _boardXpixels;
 
 	sf::RectangleShape _board;
+
 	Piece* _pieces; // array to hold all of the pieces
 };

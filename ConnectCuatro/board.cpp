@@ -28,7 +28,6 @@ Board::Board(sf::RenderWindow& window, int boardX, int boardY) : _window(window)
 		_pieces[i].pos_x = i % 7;
 		_pieces[i].pos_y = i / 7;
 	}
-
 };
 
 // get dimensions of the board
@@ -52,14 +51,14 @@ Piece* Board::getPieces() const {
 	return _pieces;
 }
 
-int Board::positionToIndex(int column, int row) {
+int Board::positionToIndex(int column, int row) const{
 
 	int pos = column + (row * _boardX);  // derived formula to convert position on board to corresponding index
 
 	return pos;
 }
 
-int Board::getColumnHover(int mouse_x) {
+int Board::getColumnHover(int mouse_x) const{
 
 	int mouse_col = 0;
 	float columnScale = 1.0 / _boardX; // for conventional board, board columns are split 1/7 each, so it will be 91 pixels each column
@@ -94,10 +93,11 @@ void Board::hoverPiece(Piece& currPiece, int column) {
 
 }
 
-// checks to see whether column is not full : returns row in board it is valid in
-int Board::checkValidDrop(int column) {
+// checks to see whether column is playable (not full)
+bool Board::checkValidDrop(int column) const {
 
 	int positionIndex = 0;
+	bool validCol = false;
 
 	for (int i = _boardY - 1; i > -1; i--) {
 		// check pieces from bottom up
@@ -105,11 +105,30 @@ int Board::checkValidDrop(int column) {
 		positionIndex = positionToIndex(column, i);
 		if (_pieces[positionIndex].color == NONE) {
 			// found the open slot (row)
-			return i; 
+			validCol = true;
 		}
 	}
 
-	return -1; // column is full
+	return validCol;
+
+}
+
+// returns the playable row in a column
+int Board::findValidRow(int column) const {
+	
+	int positionIndex = 0;
+
+	for (int i = _boardY - 1; i > -1; i--) {
+		// check pieces from bottom up
+		// turn slot's board (x,y) position into the corresponding index in array
+		positionIndex = positionToIndex(column, i);
+		if (_pieces[positionIndex].color == NONE) {
+			// return the open row
+			return i;
+		}
+	}
+
+	return -1; // column is not playable
 
 }
 
