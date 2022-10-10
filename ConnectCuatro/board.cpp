@@ -23,6 +23,7 @@ Board::Board(sf::RenderWindow& window, int boardX, int boardY) : _window(window)
 		_pieces[i].coin.setOutlineThickness(-3);
 		_pieces[i].coin.setOutlineColor(sf::Color::Black);
 		_pieces[i].color = NONE;
+		_pieces[i].player= -1;
 
 		// positions of the pieces as (x,y) coordinates on the board
 		_pieces[i].pos_x = i % 7;

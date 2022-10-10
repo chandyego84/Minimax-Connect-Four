@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <algorithm>
 #include <SFML/Graphics.hpp>
 
 using namespace std;
@@ -14,6 +15,7 @@ enum PieceColor {
 struct Piece {
 	sf::CircleShape coin;
 	PieceColor color;
+	int player; // -1: nobody, 0: human, 1: AI
 	int pos_x;
 	int pos_y;
 };
