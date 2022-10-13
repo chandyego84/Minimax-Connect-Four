@@ -17,7 +17,7 @@ Game::Game(sf::RenderWindow& window) : _window(window) {
 };
 
 // returns total number of moves made since start of the game
-unsigned int Game::numberOfMoves() const {
+unsigned int Game::NumberOfMoves() const {
 	return this->_numberMoves;
 }
 
@@ -166,15 +166,12 @@ unsigned int Game::numberOfMoves() const {
 // checks if current player can win with next move using col position of piece being dropped
 bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 	
-	// given the board state
-	
+	// given the board state	
 	// check all possible orientations of connect 4 from drop position
 		// checking to see if each slot matches the color of the current player's color (isAI)
 	Piece* pieces = gameBoard.getPieces();
 
 	int validRow = gameBoard.findValidRow(column);
-	cout << "column: " << column << endl;
- 	cout << "valid Row: " << validRow << endl;
 	int arrPosition = gameBoard.positionToIndex(column, validRow);
 
 	// (x,y) position of the dropped piece
@@ -187,8 +184,8 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 	int checkIterator = 0;
 	// vertically down
 	while (droppedRow + checkIterator < 6 && checkIterator < 4) { // make the 4 checks as long as within board frame
-		currIndex = gameBoard.positionToIndex(droppedCol, droppedRow + checkIterator);
-		if (pieces[currIndex].player == isAI) {
+		currIndex = gameBoard.positionToIndex(droppedCol, droppedRow + checkIterator + 1);
+		if (currIndex < 42 && pieces[currIndex].player == isAI) {
 			// matching slot add to streak
 			checkIterator++;
 		}
@@ -197,7 +194,7 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 			break;
 		}
 	}
-	if (checkIterator == 4) {
+	if (checkIterator == 3) {
 		// win
 		cout << "WIN";
 		return true;
@@ -205,8 +202,8 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 
 	// horizontally left
 	while (droppedCol - checkIterator >= 0 && checkIterator < 4) { // make the 4 checks as long as within board frame
-		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator, droppedRow);
-		if (pieces[currIndex].player == isAI) {
+		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator - 1, droppedRow);
+		if (currIndex < 42 && pieces[currIndex].player == isAI) {
 			// matching slot, add to streak
 			checkIterator++;
 		}
@@ -215,7 +212,7 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 			break;
 		}
 	}
-	if (checkIterator == 4) {
+	if (checkIterator == 3) {
 		// win
 		cout << "WIN";
 		return true;
@@ -224,8 +221,8 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 	checkIterator = 0;
 	// horizontal right
 	while (droppedCol + checkIterator < 7 && checkIterator < 4) { // make the 4 checks as long as within board frame
-		currIndex = gameBoard.positionToIndex(droppedCol + checkIterator, droppedRow);
-		if (pieces[currIndex].player == isAI) {
+		currIndex = gameBoard.positionToIndex(droppedCol + checkIterator + 1, droppedRow);
+		if (currIndex < 42 && pieces[currIndex].player == isAI) {
 			// matching slot, add to streak
 			checkIterator++;
 		}
@@ -234,7 +231,7 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 			break;
 		}
 	}
-	if (checkIterator == 4) {
+	if (checkIterator == 3) {
 		// win
 		cout << "WIN";
 		return true;
@@ -243,8 +240,8 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 	checkIterator = 0;
 	// down-diagonal left
 	while (droppedRow + checkIterator < 6 && droppedCol - checkIterator >= 0 && checkIterator < 4) { // make the 4 checks as long as within board frame
-		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator, droppedRow + checkIterator);
-		if (pieces[currIndex].player == isAI) {
+		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator - 1, droppedRow + checkIterator + 1);
+		if (currIndex < 42 && pieces[currIndex].player == isAI) {
 			// matching slot, add to streak
 			checkIterator++;
 		}
@@ -253,7 +250,7 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 			break;
 		}
 	}
-	if (checkIterator == 4) {
+	if (checkIterator == 3) {
 		// win
 		cout << "WIN";
 		return true;
@@ -262,8 +259,8 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 	checkIterator = 0;
 	// down-diagonal right
 	while (droppedRow + checkIterator < 6 && droppedCol + checkIterator < 7 && checkIterator < 4) { // make the 4 checks as long as within board frame
-		currIndex = gameBoard.positionToIndex(droppedCol + checkIterator, droppedRow + checkIterator);
-		if (pieces[currIndex].player == isAI) {
+		currIndex = gameBoard.positionToIndex(droppedCol + checkIterator + 1, droppedRow + checkIterator + 1);
+		if (currIndex < 42 && pieces[currIndex].player == isAI) {
 			// matching slot, add to streak
 			checkIterator++;
 		}
@@ -272,7 +269,7 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 			break;
 		}
 	}
-	if (checkIterator == 4) {
+	if (checkIterator == 3) {
 		// win 
 		cout << "WIN";
 		return true;
@@ -281,8 +278,8 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 	checkIterator = 0;
 	// up-diagonal left
 	while (droppedRow - checkIterator >= 0 && droppedCol - checkIterator >= 0 && checkIterator < 4) {
-		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator, droppedRow - checkIterator);
-		if (pieces[currIndex].player == isAI) {
+		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator - 1, droppedRow - checkIterator - 1);
+		if (currIndex < 42 && pieces[currIndex].player == isAI) {
 			// matching slot, add to streak
 			checkIterator++;
 		}
@@ -291,7 +288,7 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 			break;
 		}
 	}
-	if (checkIterator == 4) {
+	if (checkIterator == 3) {
 		// win
 		cout << "WIN";
 		return true;
@@ -300,8 +297,8 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 	checkIterator = 0;
 	// up-diagonal right
 	while (droppedRow - checkIterator >= 0 && droppedCol + checkIterator < 7 && checkIterator < 4) {
-		currIndex = gameBoard.positionToIndex(droppedRow - checkIterator, droppedCol + checkIterator);
-		if (pieces[currIndex].player == isAI) {
+		currIndex = gameBoard.positionToIndex(droppedRow - checkIterator - 1, droppedCol + checkIterator - 1);
+		if (currIndex < 42 && pieces[currIndex].player == isAI) {
 			// matching slot, add to streak
 			checkIterator++;
 		}
@@ -310,7 +307,7 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 			break;
 		}
 	}
-	if (checkIterator == 4) {
+	if (checkIterator == 3) {
 		// win
 		cout << "WIN";
 		return true;
@@ -330,7 +327,7 @@ bool Game::CheckWin(const Board &gameBoard, int column, bool isAI) const {
 // PARAMETERS: Board object (to get positions), number of moves made so far, maximizingPlayer or minimizingPlayer 
 // AI will be considered the maximizing player
 // we will be checking every position (depth is max as possible); definitely going to be slow or fail
-int Game::minimax(const Board& B, int numberOfMoves, bool isMaximizing) {
+int Game::Minimax(const Board& B, int numberOfMoves, bool isMaximizing) {
 
 	// 1. terminating point
 	// if game over in current position
@@ -346,38 +343,46 @@ int Game::minimax(const Board& B, int numberOfMoves, bool isMaximizing) {
 			return (Board::WIDTH * Board::HEIGHT + 1 - numberOfMoves) / 2;
 		}
 	}
-
 	// 2. if maximizing player; find highest evaluation that can be obtained from this position
 	// loop through all children (positions that can be reached in single move) of current position
 	// eval = minimax(child, depth - 1, false)
 	// maxEval = max(maxEval, eval)
 	// return maxEval
-	if (isMaximizing) {
-		int maxEval = -Board::WIDTH * Board::HEIGHT; // init best possible score with lower bound on score
-		for (int x = 0; x < Board::WIDTH; x++) { // loop through each possible next move
-			int eval = minimax(B, numberOfMoves + 1, false);
-			maxEval = max(maxEval, eval);
-		}
-		return maxEval;
-	}
+	//if (isMaximizing) {
+	//	int maxEval = -Board::WIDTH * Board::HEIGHT; // init best possible score with lower bound on score
+	//	int column = 0;
+	//	for (int x = 0; x < Board::WIDTH; x++) { // loop through each possible next move
+	//		int eval = Minimax(B, numberOfMoves + 1, false);
+	//		maxEval = max(maxEval, eval);
+	//		if (eval > maxEval) {
+	//			maxEval = eval;
+	//			column = x;
+	//		}
+	//	}
+	//	return column;
+	//}
 
-	// 3. if minimizing player;
-	// loop through all children of current position
-	// eval = minimax(child, depth - 1, true)
-	// minEval = min(minEval, eval)
-	// return minEval
-	else {
-		int minEval = Board::WIDTH * Board::HEIGHT; // init min possible score with higher bound on score
-		for (int x = 0; x < Board::WIDTH; x++) { // loop through each possible next move
-			int eval = minimax(B, numberOfMoves + 1, true);
-			minEval = min(minEval, eval);
-		}
-		return minEval;
-	}
+	//// 3. if minimizing player;
+	//// loop through all children of current position
+	//// eval = minimax(child, depth - 1, true)
+	//// minEval = min(minEval, eval)
+	//// return minEval
+	//else {
+	//	int minEval = Board::WIDTH * Board::HEIGHT; // init min possible score with higher bound on score
+	//	int column = 0;
+	//	for (int x = 0; x < Board::WIDTH; x++) { // loop through each possible next move
+	//		int eval = Minimax(B, numberOfMoves + 1, true);
+	//		if (eval < minEval) {
+	//			minEval = eval;
+	//			column = x;
+	//		}
+	//	}
+	//	return column;
+	//}
 
 }
 
-void Game::run() {
+void Game::Run() {
 
 	Board gameBoard(_window);
 	Piece* pieces = gameBoard.getPieces();
@@ -399,6 +404,7 @@ void Game::run() {
 
 			case event.MouseMoved:
 				mouse_x = event.mouseMove.x;
+
 				// set up hovering piece
 				colHover = gameBoard.getColumnHover(mouse_x); // current piece to be dropped
 				gameBoard.hoverPiece(_hoverPiece, colHover);
@@ -411,7 +417,7 @@ void Game::run() {
 					// find row in the column to drop
 					// checks if column is playable
 					isPlayableCol = gameBoard.checkValidDrop(colHover);
-					
+
 					if (isPlayableCol) {
 						int validRow = gameBoard.findValidRow(colHover);
 						int posIndex = gameBoard.positionToIndex(colHover, validRow);
@@ -419,6 +425,8 @@ void Game::run() {
 						pieces[posIndex].player = isAiPlaying; // change state of that slot to which player played it
 						isWon = CheckWin(gameBoard, colHover, isAiPlaying); // will this drop lead to a win?
 						pieces[posIndex].color = _hoverPiece.color; // change color of slot being dropped in
+
+						this->_numberMoves++;
 
 						// change token color for next player
 						if (_hoverPiece.color == YELLOW) {
@@ -432,18 +440,38 @@ void Game::run() {
 							isAiPlaying = true;
 						}
 
-						this->_numberMoves++; // update number of moves made in game
+						// AI's turn
+						//if (_numberMoves == 7) {
+						//	cout << "AIS TURN" << endl;
+						//	isPlayableCol = 0;
+						//	_hoverPiece.color = YELLOW;
+						//	_hoverPiece.player = true;
+						//	isAiPlaying = true;
 
+						//	// making best move for AI
+						//	int aiColumn = 0;
+						//	aiColumn = Minimax(gameBoard, this->NumberOfMoves(), true); // find best move
+						//	isPlayableCol = gameBoard.checkValidDrop(aiColumn); // make sure move is valid
+						//	if (isPlayableCol) {
+						//		int validRow = gameBoard.findValidRow(aiColumn);
+						//		int posIndex = gameBoard.positionToIndex(aiColumn, validRow);
+
+						//		pieces[posIndex].player = isAiPlaying;
+						//		isWon = CheckWin(gameBoard, aiColumn, isAiPlaying);
+						//		pieces[posIndex].color = _hoverPiece.color;
+
+						//		this->_numberMoves++;
+						//	}
+						//}
 					}
+
 					else {
 						cout << "Not valid column on the board" << endl;
 					}
 
-					// AI's turn
 
+					break;
 				}
-
-				break;
 
 			default:
 				break;

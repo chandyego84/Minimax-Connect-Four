@@ -8,7 +8,7 @@ int main() {
 
 	sf::RenderWindow window(sf::VideoMode(800, 630), "Connect Cuatro");
 	Game game(window);
-	game.run();
+	game.Run();
 
 	return 0;
 }

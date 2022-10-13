@@ -8,9 +8,9 @@ class Game {
 public:
 	Game(sf::RenderWindow& window);
 
-	void run();
+	void Run();
 
-	unsigned int numberOfMoves() const;
+	unsigned int NumberOfMoves() const;
 
 	// checks if current player can win with next move using (col, row) position of piece being dropped
 	//bool CheckWin(Board gameBoard, int column, int row) const;
@@ -18,7 +18,7 @@ public:
 	bool CheckWin(const Board& gameBoard, int column, bool isAI) const;
 
 	// AI solver
-	int minimax(const Board& B, int numberOfMoves, bool isMaximizing);
+	int Minimax(const Board& B, int numberOfMoves, bool isMaximizing);
 
 private:
 	sf::RenderWindow& _window;
