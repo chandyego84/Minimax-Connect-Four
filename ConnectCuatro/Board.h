@@ -7,15 +7,21 @@
 using namespace std;
 
 enum PieceColor {
+	NONE,
 	RED,
-	YELLOW,
-	NONE
+	YELLOW
+};
+
+enum PiecePlayer {
+	EMPTY,
+	PLAYER,
+	AI
 };
 
 struct Piece {
 	sf::CircleShape coin;
 	PieceColor color;
-	int player; // -1: nobody, 0: human, 1: AI
+	int player;
 	int pos_x;
 	int pos_y;
 };
