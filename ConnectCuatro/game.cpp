@@ -218,7 +218,9 @@ bool Game::CheckWin(const Board& gameBoard, const int playerPiece) const {
 			}
 		}
 	}
+
 	return false;
+
 }
 
 // Recursively solve a connect 4 position using minimax algorithm
@@ -330,6 +332,98 @@ int Game::EvaluateWindow(const int window[WINDOW_LENGTH], const int playerPiece)
 		score -= 4;
 	}
 
+	return score;
+
+}
+
+int Game::ScorePosition(const Board& gameBoard, const int playerPiece) const {
+
+	int score = 0;
+	int window[WINDOW_LENGTH] = {};
+	Piece* pieces = gameBoard.getPieces();
+
+	int currIndex = 0;
+
+	// score for center column
+	int centerCol = Board::WIDTH / 2;
+	int centerCount = 0;
+	// get player piece for each piece in center column
+	for (int r = 0; r < Board::HEIGHT; r++) {
+		currIndex = gameBoard.positionToIndex(centerCol, r);
+		if (pieces[currIndex].player == playerPiece) {
+			centerCount++;
+		}
+	} 
+	score += centerCount * 3;
+
+	// score horizontal
+	int rowArray[Board::WIDTH] = {};
+	for (int r = 0; r < Board::HEIGHT; r++) {
+		// go through each row, make array of that row
+		for (int c = 0; c < Board::WIDTH; c++) {
+			currIndex = gameBoard.positionToIndex(c, r);
+			rowArray[c] = pieces[currIndex].player;
+		}
+
+		// check each window in the row array
+		for (int c = 0; c < Board::WIDTH - 3; c++) {
+			for (int i = 0; i < WINDOW_LENGTH; i++) {
+				// create next window in the row
+				window[i] = rowArray[i + c];
+			}
+			score += EvaluateWindow(window, playerPiece);
+		}
+	}
+
+	// score vertical
+	int colArray[Board::HEIGHT] = {};
+	for (int c = 0; c < Board::WIDTH; c++) {
+		// go through each column, make array for that column
+		for (int r = 0; r < Board::HEIGHT; r++) {
+			currIndex = gameBoard.positionToIndex(c, r);
+			colArray[r] = pieces[currIndex].player;
+		}
+
+		// check each window in the col array
+		for (int r = 0; r < Board::HEIGHT - 3; r++) {
+			for (int i = 0; i < WINDOW_LENGTH; i++) {
+				// create next window in the column
+				window[i] = colArray[i + r];
+			}
+			score += EvaluateWindow(window, playerPiece);
+		}
+
+	}
+
+	// score positive diagonal
+	for (int c = 0; c < Board::WIDTH - 3; c++) {
+		for (int r = 3; r < Board::HEIGHT; r++) {
+			// go through each diagonal
+			for (int i = 0; i < WINDOW_LENGTH; i++) {
+				// create next window
+				window[i] = pieces[gameBoard.positionToIndex(c + i, r - i)].player;
+			}
+			score += EvaluateWindow(window, playerPiece);
+		}
+	}
+	
+	// score negative diagonal
+	for (int c = 0; c < Board::WIDTH - 3; c++) {
+		for (int r = 0; r < Board::HEIGHT - 3; r++) {
+			// go through each diagonal
+			for (int i = 0; i < WINDOW_LENGTH; i++) {
+				/*if (c == 3 && r == 2) {
+					cout << c + i << ", " << r + i << endl;
+				}*/
+				// create next window
+				window[i] = pieces[gameBoard.positionToIndex(c + i, r + i)].player;
+			}
+			score += EvaluateWindow(window, playerPiece);
+		}
+	}
+
+	
+	return score;
 }
 
 
@@ -376,6 +470,7 @@ void Game::Run() {
 						pieces[posIndex].color = _hoverPiece.color; // change color of slot being dropped in
 						pieces[posIndex].player = _hoverPiece.player; // change state of that slot to which player played it
 						isWon = CheckWin(gameBoard, _hoverPiece.player);
+						cout << ScorePosition(gameBoard, _hoverPiece.player);
 
 						this->_numberMoves++;
 

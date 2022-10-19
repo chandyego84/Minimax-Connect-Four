@@ -29,7 +29,7 @@ public:
 	// ScorePosition()
 	// calculates all scores for each possible move for each player during the play
 	// RETURNS: score of move
-	//int ScorePosition();
+	int ScorePosition(const Board& gameBoard, const int playerPiece) const;
 
 	// IsTerminalNode()
 
