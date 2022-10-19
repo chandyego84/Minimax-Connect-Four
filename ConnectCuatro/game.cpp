@@ -287,6 +287,52 @@ bool Game::CheckWin(const Board& gameBoard, const int playerPiece) const {
 
 //}
 
+int Game::EvaluateWindow(const int window[WINDOW_LENGTH], const int playerPiece) const {
+
+	int score = 0;
+	int opponent = PLAYER;
+	if (playerPiece == PLAYER) {
+		opponent = AI;
+	}
+
+	int numCurrentPlayer = 0;
+	int numOpponentPlayer = 0;
+	int numEmptyPlayer = 0;
+
+	// checks the type of piece in each window
+	for (int piece = 0; piece < WINDOW_LENGTH; piece++) {
+		if (window[piece] == playerPiece) {
+			// current piece is the current player
+			numCurrentPlayer++;
+		}
+		else if (window[piece] == opponent) {
+			// current piece is the opponent player
+			numOpponentPlayer++;
+		}
+		else {
+			// current piece is empty
+			numEmptyPlayer++;
+		}
+	}
+
+	if (numCurrentPlayer == 4) {
+		score += 100;
+	}
+	else if (numCurrentPlayer == 3 && numEmptyPlayer == 1) {
+		score += 5;
+	}
+	else if (numCurrentPlayer == 2 && numEmptyPlayer == 2) {
+		score += 2;
+	}
+
+	if (numOpponentPlayer == 3 && numEmptyPlayer == 1) {
+		// window has opponent at an advantage
+		score -= 4;
+	}
+
+}
+
+
 void Game::Run() {
 
 	Board gameBoard(_window);
