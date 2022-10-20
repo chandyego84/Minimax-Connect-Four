@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Board.h"
+#include <chrono>
+using namespace std::chrono;
 
 // #define ROUND_DIVIDE(numer, denom) (((numer) + (denom) / 2) / (denom))
 
@@ -16,6 +18,7 @@ public:
 
 	// checks current board state to determine if win has occurred
 	bool CheckWin(const Board& gameBoard, const int playerPiece) const;
+	static bool CheckWin(const Piece* pieces, const int playerPiece);
 
 	// EvaluateWindow(): window size set to 4 (want connection of 4 pieces)
 	// helper fxn for ScorePosition()
@@ -23,15 +26,16 @@ public:
 	// three discs -> score < score(four discs)
 	// two discs -> score < score(three discs)
 	// OPPONENT has three pieces connected, PLAYER -> score = negative
-	int EvaluateWindow(const int window[WINDOW_LENGTH], const int playerPiece) const;
-
+	static int EvaluateWindow(const int window[WINDOW_LENGTH], const int playerPiece);
 
 	// ScorePosition()
 	// calculates all scores for each possible move for each player during the play
 	// RETURNS: score of move
 	int ScorePosition(const Board& gameBoard, const int playerPiece) const;
+	static int ScorePosition(const Piece* pieces, const int playerPiece);
 
-	// IsTerminalNode()
+	bool IsTerminalNode(const Board& gameBoard) const;
+	static bool IsTerminalNode(const Piece* pieces);
 
 
 	// Minimax()
@@ -41,7 +45,7 @@ public:
 		// LUT: calculated according to evaluteWindow()
 	// Updates optimal value from the child nodes
 	// Alpha - new score; when alpha > current value -> stops recursing and updates new value
-	//int Minimax(const Board& B, int numberOfMoves, bool isMaximizing);
+	int* Minimax(Piece* gameState, int depth, int alpha, int beta, int maximizingPlayer);
 
 private:
 	sf::RenderWindow& _window;

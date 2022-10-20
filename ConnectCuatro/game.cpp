@@ -21,153 +21,12 @@ unsigned int Game::NumberOfMoves() const {
 	return this->_numberMoves;
 }
 
-// checks if a column drop leads to a win using (col, row) position on board
-//bool Game::CheckWin(Board gameBoard, int column, int row) const{
-//	
-//	Piece* pieces = gameBoard.getPieces();
-//
-//	int arrPosition = gameBoard.positionToIndex(column, row);
-//
-//	// (x,y) position of the dropped piece
-//	int droppedCol = pieces[arrPosition].pos_x;
-//	int droppedRow = pieces[arrPosition].pos_y;
-//
-//	// holds array index of each piece being checked
-//	int currIndex = 0;
-//
-//	int checkIterator = 0;
-//	// vertically down
-//	while (droppedRow + checkIterator < 6 && checkIterator < 4) { // make the 4 checks as long as within board frame
-//		currIndex = gameBoard.positionToIndex(droppedCol, droppedRow + checkIterator);
-//		if (pieces[currIndex].color == pieces[arrPosition].color) {
-//			// matching slot add to streak
-//			checkIterator++;
-//		}
-//		else {
-//			// mismatch, stop checking
-//			break;
-//		}	
-//	}
-//	if (checkIterator == 4) {
-//		// win
-//		return true;
-//	}
-//
-//	// horizontally left
-//	while (droppedCol - checkIterator >= 0 && checkIterator < 4) { // make the 4 checks as long as within board frame
-//		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator, droppedRow);
-//		if (pieces[currIndex].color == pieces[arrPosition].color) {
-//			// matching slot, add to streak
-//			checkIterator++;
-//		}
-//		else {
-//			// mismatch, stop checking
-//			break;
-//		}
-//	}
-//	if (checkIterator == 4) {
-//		// win
-//		return true;
-//	}
-//
-//	checkIterator = 0;
-//	// horizontal right
-//	while (droppedCol + checkIterator < 7 && checkIterator < 4) { // make the 4 checks as long as within board frame
-//		currIndex = gameBoard.positionToIndex(droppedCol + checkIterator, droppedRow);
-//		if (pieces[currIndex].color == pieces[arrPosition].color) {
-//			// matching slot, add to streak
-//			checkIterator++;
-//		}
-//		else {
-//			// mismatch, stop checking
-//			break;
-//		}
-//	}
-//	if (checkIterator == 4) {
-//		// win
-//		return true;
-//	}
-//
-//	checkIterator = 0;
-//	// down-diagonal left
-//	while (droppedRow + checkIterator < 6 && droppedCol - checkIterator >= 0 && checkIterator < 4) { // make the 4 checks as long as within board frame
-//		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator, droppedRow + checkIterator);
-//		if (pieces[currIndex].color == pieces[arrPosition].color) {
-//			// matching slot, add to streak
-//			checkIterator++;
-//		}
-//		else {
-//			// mismatch, stop checking
-//			break;
-//		}
-//	}
-//	if (checkIterator == 4) {
-//		// win
-//		return true;
-//	}
-//
-//	checkIterator = 0;
-//	// down-diagonal right
-//	while (droppedRow + checkIterator < 6 && droppedCol + checkIterator < 7 && checkIterator < 4) { // make the 4 checks as long as within board frame
-//		currIndex = gameBoard.positionToIndex(droppedCol + checkIterator, droppedRow + checkIterator);
-//		if (pieces[currIndex].color == pieces[arrPosition].color) {
-//			// matching slot, add to streak
-//			checkIterator++;
-//		}
-//		else {
-//			// mismatch, stop checking
-//			break;
-//		}
-//	}
-//	if (checkIterator == 4) {
-//		// win 
-//		return true;
-//	}
-//
-//	checkIterator = 0;
-//	// up-diagonal left
-//	while (droppedRow - checkIterator >= 0 && droppedCol - checkIterator >= 0 && checkIterator < 4) {
-//		currIndex = gameBoard.positionToIndex(droppedCol - checkIterator, droppedRow - checkIterator);
-//		if (pieces[currIndex].color == pieces[arrPosition].color) {
-//			// matching slot, add to streak
-//			checkIterator++;
-//		}
-//		else {
-//			// mismatch, stop checking
-//			break;
-//		}
-//	}
-//	if (checkIterator == 4) {
-//		// win
-//		return true;
-//	}
-//
-//	checkIterator = 0;
-//	// up-diagonal right
-//	while (droppedRow - checkIterator >= 0 && droppedCol + checkIterator < 7 && checkIterator < 4) {
-//		currIndex = gameBoard.positionToIndex(droppedRow - checkIterator, droppedCol + checkIterator);
-//		if (pieces[currIndex].color == pieces[arrPosition].color) {
-//			// matching slot, add to streak
-//			checkIterator++;
-//		}
-//		else {
-//			// mismatch, stop checking
-//			break;
-//		}
-//	}
-//	if (checkIterator == 4) {
-//		// win
-//		return true;
-//	}
-//
-//	return false;
-//}
 
 // checks if current board state has a win
 // TODO: Make more efficient (e.g., bitboard, Convolution oepration on two dimensions of the board)
 bool Game::CheckWin(const Board& gameBoard, const int playerPiece) const {
 	
-	Piece* pieces = gameBoard.getPieces();
+	Piece* pieces = gameBoard.GetPieces();
 
 	// holds array index of each piece being checked
 	int currIndex = 0;
@@ -175,7 +34,7 @@ bool Game::CheckWin(const Board& gameBoard, const int playerPiece) const {
 	// check horizontal locations for win
 	for (int c = 0; c < Board::WIDTH - 3; c++) {
 		for (int r = 0; r < Board::HEIGHT; r++) {
-			currIndex = gameBoard.positionToIndex(c, r);
+			currIndex = gameBoard.PositionToIndex(c, r);
 			if (pieces[currIndex].player == playerPiece && pieces[currIndex + 1].player == playerPiece
 				&& pieces[currIndex + 2].player == playerPiece && pieces[currIndex + 3].player == playerPiece) {				
 				return true;
@@ -186,10 +45,9 @@ bool Game::CheckWin(const Board& gameBoard, const int playerPiece) const {
 	// check vertical locations for win 
 	for (int c = 0; c < Board::WIDTH; c++) {
 		for (int r = 0; r < Board::HEIGHT - 3; r++) {
-			currIndex = gameBoard.positionToIndex(c, r);
+			currIndex = gameBoard.PositionToIndex(c, r);
 			if (pieces[currIndex].player == playerPiece && pieces[currIndex + 7].player == playerPiece
 				&& pieces[currIndex + 14].player == playerPiece && pieces[currIndex + 21].player == playerPiece) {
-				cout << "Vertical Win" << endl;
 				return true;
 			}
 		}
@@ -198,10 +56,9 @@ bool Game::CheckWin(const Board& gameBoard, const int playerPiece) const {
 	// check positive diagonals
 	for (int c = 0; c < Board::WIDTH - 3; c++) {
 		for (int r = 3; r < Board::HEIGHT; r++) {
-			currIndex = gameBoard.positionToIndex(c, r);
+			currIndex = gameBoard.PositionToIndex(c, r);
 			if (pieces[currIndex].player == playerPiece && pieces[currIndex - 6].player == playerPiece
 				&& pieces[currIndex - 12].player == playerPiece && pieces[currIndex - 18].player == playerPiece) {
-				cout << "Positive Diagonal Win" << endl;
 				return true;
 			}
 		}
@@ -210,10 +67,9 @@ bool Game::CheckWin(const Board& gameBoard, const int playerPiece) const {
 	// check negative diagonals
 	for (int c = 0; c < Board::WIDTH - 3; c++) {
 		for (int r = 0; r < Board::HEIGHT - 3; r++) {
-			currIndex = gameBoard.positionToIndex(c, r);
+			currIndex = gameBoard.PositionToIndex(c, r);
 			if (pieces[currIndex].player == playerPiece && pieces[currIndex + 8].player == playerPiece
 				&& pieces[currIndex + 16].player == playerPiece && pieces[currIndex + 24].player == playerPiece) {
-				cout << "Negative Diagonal Win" << endl;
 				return true;
 			}
 		}
@@ -223,73 +79,172 @@ bool Game::CheckWin(const Board& gameBoard, const int playerPiece) const {
 
 }
 
+bool Game::CheckWin(const Piece* pieces, const int playerPiece) {
+
+	// holds array index of each piece being checked
+	int currIndex = 0;
+
+	// check horizontal locations for win
+	for (int c = 0; c < Board::WIDTH - 3; c++) {
+		for (int r = 0; r < Board::HEIGHT; r++) {
+			currIndex = Board::PositionToIndex(c, r);
+			if (pieces[currIndex].player == playerPiece && pieces[currIndex + 1].player == playerPiece
+				&& pieces[currIndex + 2].player == playerPiece && pieces[currIndex + 3].player == playerPiece) {
+				return true;
+			}
+		}
+	}
+
+	// check vertical locations for win 
+	for (int c = 0; c < Board::WIDTH; c++) {
+		for (int r = 0; r < Board::HEIGHT - 3; r++) {
+			currIndex = Board::PositionToIndex(c, r);
+			if (pieces[currIndex].player == playerPiece && pieces[currIndex + 7].player == playerPiece
+				&& pieces[currIndex + 14].player == playerPiece && pieces[currIndex + 21].player == playerPiece) {
+				return true;
+			}
+		}
+	}
+
+	// check positive diagonals
+	for (int c = 0; c < Board::WIDTH - 3; c++) {
+		for (int r = 3; r < Board::HEIGHT; r++) {
+			currIndex = Board::PositionToIndex(c, r);
+			if (pieces[currIndex].player == playerPiece && pieces[currIndex - 6].player == playerPiece
+				&& pieces[currIndex - 12].player == playerPiece && pieces[currIndex - 18].player == playerPiece) {
+				return true;
+			}
+		}
+	}
+
+	// check negative diagonals
+	for (int c = 0; c < Board::WIDTH - 3; c++) {
+		for (int r = 0; r < Board::HEIGHT - 3; r++) {
+			currIndex = Board::PositionToIndex(c, r);
+			if (pieces[currIndex].player == playerPiece && pieces[currIndex + 8].player == playerPiece
+				&& pieces[currIndex + 16].player == playerPiece && pieces[currIndex + 24].player == playerPiece) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+
+}
+
+// board state has a win or draw 
+bool Game::IsTerminalNode(const Board& gameBoard) const {
+	return CheckWin(gameBoard, PLAYER) || CheckWin(gameBoard, AI) || Board::GetValidColumns(gameBoard.GetPieces()).empty();
+}
+
+bool Game::IsTerminalNode(const Piece* pieces) {
+	return CheckWin(pieces, PLAYER) || CheckWin(pieces, AI) || Board::GetValidColumns(pieces).empty();
+}
+
 // Recursively solve a connect 4 position using minimax algorithm
-// RETURNS: score of a position
-// - 0 for draw game
-// - Positive Score: if can win with whatever opponent is playing
-//		- Score is number of moves left before you win. CHECK README (faster you can win, higher your score)
-// - Negative Score: if opponent can force you to lose
-//		- Score is opposite of the number of moves before you lose. CHECK README (faster you can lose, lower your score)
-// PARAMETERS: Board object (to get positions), number of moves made so far, maximizingPlayer or minimizingPlayer 
-// AI will be considered the maximizing player
-// we will be checking every position (depth is max as possible); definitely going to be slow or fail
-//int Game::Minimax(const Board& B, int numberOfMoves, bool isMaximizing) {
+// RETURNS: score, column to drop in
+int* Game::Minimax(Piece* gameState, int depth, int alpha, int beta, int maximizingPlayer) {
 
-	//// 1. terminating point
-	//// if game over in current position
+	int* columnAndScore = new int[2]; // stores column to drop and the score
 
-	//// check for draw game
-	//if (numberOfMoves == Board::WIDTH * Board::HEIGHT) {
-	//	return 0;
-	//}
+	// if depth is zero or terminal node
+	// only calculates the score
+	bool isTerminalNode = IsTerminalNode(gameState);
+	if (depth == 0 || isTerminalNode) {
+		if (isTerminalNode) {
+			if (CheckWin(gameState, AI)) {
+				// AI is winner in this board state
+				columnAndScore[0] = -1;
+				columnAndScore[1] = 10000;
+				return columnAndScore;
+			}
+			else if (CheckWin(gameState, PLAYER)) {
+				// PLAYER is winner in this board state
+				columnAndScore[0] = -1;
+				columnAndScore[1] = -10000;
+				return columnAndScore;
+			}
+			else {
+				// DRAW in this board state
+				columnAndScore[0] = -1;
+				columnAndScore[1] = 0;
+				return columnAndScore;
+			}
+		}
+		else {
+			columnAndScore[0] = -1;
+			columnAndScore[1] = ScorePosition(gameState, maximizingPlayer);
+			return columnAndScore;
+		}
+	}
 
-	//// check if current player can win with next move
-	//for (int x = 0; x < Board::WIDTH; x++) {
-	//	if (B.checkValidDrop(x) && CheckWin(B, x, isMaximizing)) { // check if col is playable and if it can win
-	//		return (Board::WIDTH * Board::HEIGHT + 1 - numberOfMoves) / 2;
-	//	}
-	//}
+	// AI player
+	if (maximizingPlayer) {
+		int value = -10000;
+		int column = 0; // column to drop it in
+		// check each drop
+		for (int col = 0; col < Board::WIDTH; col++) {
+			// make copy of the board state
+			Piece* piecesCopy = new Piece[42];
+			copy(gameState, gameState + 42, piecesCopy);
+			
+			// drop piece if column is valid
+			if (Board::CheckValidDrop(piecesCopy, col)) {
+				int row = Board::FindValidRow(gameState, col);
+				int dropIndex = Board::PositionToIndex(col, row);
+				piecesCopy[dropIndex].color = YELLOW;
+				piecesCopy[dropIndex].player = AI;
+			}
 
-	//// 2. if maximizing player; find highest evaluation that can be obtained from this position
-	//// loop through all children (positions that can be reached in single move) of current position
-	//// eval = minimax(child, depth - 1, false)
-	//// maxEval = max(maxEval, eval)
-	//// return maxEval
-	//if (isMaximizing) {
-	//	cout << "maximizing player: " << numberOfMoves << endl;
-	//	int maxEval = -Board::WIDTH * Board::HEIGHT; // init best possible score with lower bound on score
-	//	int column = 0;
-	//	for (int x = 0; x < Board::WIDTH; x++) { // loop through each possible next move
-	//		int eval = Minimax(B, numberOfMoves + 1, false);
-	//		if (eval > maxEval) {
-	//			maxEval = eval;
-	//			column = x;
-	//		}
-	//	}
-	//	return column;
-	//}
+			int newScore = Minimax(piecesCopy, depth - 1, alpha, beta, false)[1];
+			if (newScore > value) {
+				value = newScore;
+				column = col;
+			}
+			alpha = max(alpha, value);
+			if (alpha >= beta) {
+				break;
+			}
+		}
+		columnAndScore[0] = column;
+		columnAndScore[1] = value;
+		return columnAndScore;
+	}
 
-	//// 3. if minimizing player;
-	//// loop through all children of current position
-	//// eval = minimax(child, depth - 1, true)
-	//// minEval = min(minEval, eval)
-	//// return minEval
-	//else {
-	//	int minEval = Board::WIDTH * Board::HEIGHT; // init min possible score with higher bound on score
-	//	int column = 0;
-	//	for (int x = 0; x < Board::WIDTH; x++) { // loop through each possible next move
-	//		int eval = Minimax(B, numberOfMoves + 1, true);
-	//		if (eval < minEval) {
-	//			minEval = eval;
-	//			column = x;
-	//		}
-	//	}
-	//	return column;
-	//}
+	else {
+		// minimizing player
+		int value = 10000;
+		int column = 0;
+		for (int col = 0; col < Board::WIDTH; col++) {
+			// make copy of the board state
+			Piece* piecesCopy = new Piece[42];
+			copy(gameState, gameState + 42, piecesCopy);
 
-//}
+			if (Board::CheckValidDrop(piecesCopy, col)) {
+				int row = Board::FindValidRow(gameState, col);
+				int dropIndex = Board::PositionToIndex(col, row);
+				piecesCopy[dropIndex].color = RED;
+				piecesCopy[dropIndex].player = PLAYER;
+			}
 
-int Game::EvaluateWindow(const int window[WINDOW_LENGTH], const int playerPiece) const {
+			int newScore = Minimax(piecesCopy, depth - 1, alpha, beta, true)[1];
+			if (newScore < value) {
+				value = newScore;
+				column = col;
+			}
+			beta = min(beta, value);
+			if (alpha >= beta) {
+				break;
+			}
+		}
+		columnAndScore[0] = column;
+		columnAndScore[1] = value;
+		return columnAndScore;
+	}
+
+}
+
+int Game::EvaluateWindow(const int window[WINDOW_LENGTH], const int playerPiece)  {
 
 	int score = 0;
 	int opponent = PLAYER;
@@ -340,7 +295,7 @@ int Game::ScorePosition(const Board& gameBoard, const int playerPiece) const {
 
 	int score = 0;
 	int window[WINDOW_LENGTH] = {};
-	Piece* pieces = gameBoard.getPieces();
+	Piece* pieces = gameBoard.GetPieces();
 
 	int currIndex = 0;
 
@@ -349,7 +304,7 @@ int Game::ScorePosition(const Board& gameBoard, const int playerPiece) const {
 	int centerCount = 0;
 	// get player piece for each piece in center column
 	for (int r = 0; r < Board::HEIGHT; r++) {
-		currIndex = gameBoard.positionToIndex(centerCol, r);
+		currIndex = gameBoard.PositionToIndex(centerCol, r);
 		if (pieces[currIndex].player == playerPiece) {
 			centerCount++;
 		}
@@ -361,7 +316,7 @@ int Game::ScorePosition(const Board& gameBoard, const int playerPiece) const {
 	for (int r = 0; r < Board::HEIGHT; r++) {
 		// go through each row, make array of that row
 		for (int c = 0; c < Board::WIDTH; c++) {
-			currIndex = gameBoard.positionToIndex(c, r);
+			currIndex = gameBoard.PositionToIndex(c, r);
 			rowArray[c] = pieces[currIndex].player;
 		}
 
@@ -380,7 +335,7 @@ int Game::ScorePosition(const Board& gameBoard, const int playerPiece) const {
 	for (int c = 0; c < Board::WIDTH; c++) {
 		// go through each column, make array for that column
 		for (int r = 0; r < Board::HEIGHT; r++) {
-			currIndex = gameBoard.positionToIndex(c, r);
+			currIndex = gameBoard.PositionToIndex(c, r);
 			colArray[r] = pieces[currIndex].player;
 		}
 
@@ -401,7 +356,7 @@ int Game::ScorePosition(const Board& gameBoard, const int playerPiece) const {
 			// go through each diagonal
 			for (int i = 0; i < WINDOW_LENGTH; i++) {
 				// create next window
-				window[i] = pieces[gameBoard.positionToIndex(c + i, r - i)].player;
+				window[i] = pieces[gameBoard.PositionToIndex(c + i, r - i)].player;
 			}
 			score += EvaluateWindow(window, playerPiece);
 		}
@@ -412,11 +367,7 @@ int Game::ScorePosition(const Board& gameBoard, const int playerPiece) const {
 		for (int r = 0; r < Board::HEIGHT - 3; r++) {
 			// go through each diagonal
 			for (int i = 0; i < WINDOW_LENGTH; i++) {
-				/*if (c == 3 && r == 2) {
-					cout << c + i << ", " << r + i << endl;
-				}*/
-				// create next window
-				window[i] = pieces[gameBoard.positionToIndex(c + i, r + i)].player;
+				window[i] = pieces[gameBoard.PositionToIndex(c + i, r + i)].player;
 			}
 			score += EvaluateWindow(window, playerPiece);
 		}
@@ -426,11 +377,96 @@ int Game::ScorePosition(const Board& gameBoard, const int playerPiece) const {
 	return score;
 }
 
+int Game::ScorePosition(const Piece* pieces, const int playerPiece) {
+
+	int score = 0;
+	int window[WINDOW_LENGTH] = {};
+
+	int currIndex = 0;
+
+	// score for center column
+	int centerCol = Board::WIDTH / 2;
+	int centerCount = 0;
+	// get player piece for each piece in center column
+	for (int r = 0; r < Board::HEIGHT; r++) {
+		currIndex = Board::PositionToIndex(centerCol, r);
+		if (pieces[currIndex].player == playerPiece) {
+			centerCount++;
+		}
+	}
+	score += centerCount * 3;
+
+	// score horizontal
+	int rowArray[Board::WIDTH] = {};
+	for (int r = 0; r < Board::HEIGHT; r++) {
+		// go through each row, make array of that row
+		for (int c = 0; c < Board::WIDTH; c++) {
+			currIndex = Board::PositionToIndex(c, r);
+			rowArray[c] = pieces[currIndex].player;
+		}
+
+		// check each window in the row array
+		for (int c = 0; c < Board::WIDTH - 3; c++) {
+			for (int i = 0; i < WINDOW_LENGTH; i++) {
+				// create next window in the row
+				window[i] = rowArray[i + c];
+			}
+			score += EvaluateWindow(window, playerPiece);
+		}
+	}
+
+	// score vertical
+	int colArray[Board::HEIGHT] = {};
+	for (int c = 0; c < Board::WIDTH; c++) {
+		// go through each column, make array for that column
+		for (int r = 0; r < Board::HEIGHT; r++) {
+			currIndex = Board::PositionToIndex(c, r);
+			colArray[r] = pieces[currIndex].player;
+		}
+
+		// check each window in the col array
+		for (int r = 0; r < Board::HEIGHT - 3; r++) {
+			for (int i = 0; i < WINDOW_LENGTH; i++) {
+				// create next window in the column
+				window[i] = colArray[i + r];
+			}
+			score += EvaluateWindow(window, playerPiece);
+		}
+
+	}
+
+	// score positive diagonal
+	for (int c = 0; c < Board::WIDTH - 3; c++) {
+		for (int r = 3; r < Board::HEIGHT; r++) {
+			// go through each diagonal
+			for (int i = 0; i < WINDOW_LENGTH; i++) {
+				// create next window
+				window[i] = pieces[Board::PositionToIndex(c + i, r - i)].player;
+			}
+			score += EvaluateWindow(window, playerPiece);
+		}
+	}
+
+	// score negative diagonal
+	for (int c = 0; c < Board::WIDTH - 3; c++) {
+		for (int r = 0; r < Board::HEIGHT - 3; r++) {
+			// go through each diagonal
+			for (int i = 0; i < WINDOW_LENGTH; i++) {
+				window[i] = pieces[Board::PositionToIndex(c + i, r + i)].player;
+			}
+			score += EvaluateWindow(window, playerPiece);
+		}
+	}
+
+	return score;
+
+}
+
 
 void Game::Run() {
 
 	Board gameBoard(_window);
-	Piece* pieces = gameBoard.getPieces();
+	Piece* pieces = gameBoard.GetPieces();
 
 	bool isWon = false;
 
@@ -451,69 +487,61 @@ void Game::Run() {
 				mouse_x = event.mouseMove.x;
 
 				// set up hovering piece
-				colHover = gameBoard.getColumnHover(mouse_x); // current piece to be dropped
-				gameBoard.hoverPiece(_hoverPiece, colHover);
+				colHover = gameBoard.GetColumnHover(mouse_x); // current piece to be dropped
+				gameBoard.HoverPiece(_hoverPiece, colHover);
 
 				break;
 			
 			case event.MouseButtonPressed:
 				// human player drops their piece
-				if (mouse_x < gameBoard.getBoardXpixels() && !isWon) { // mouse is within board frame; dropping event
+				if (mouse_x < gameBoard.GetBoardXpixels() && !isWon) { // mouse is within board frame; dropping event
 					// find row in the column to drop
 					// checks if column is playable
-					isPlayableCol = gameBoard.checkValidDrop(colHover);
-
+					isPlayableCol = gameBoard.CheckValidDrop(colHover);
+					
 					if (isPlayableCol) {
-						int validRow = gameBoard.findValidRow(colHover);
-						int posIndex = gameBoard.positionToIndex(colHover, validRow);
+						int validRow = gameBoard.FindValidRow(pieces, colHover);
+						int posIndex = gameBoard.PositionToIndex(colHover, validRow);
 
 						pieces[posIndex].color = _hoverPiece.color; // change color of slot being dropped in
 						pieces[posIndex].player = _hoverPiece.player; // change state of that slot to which player played it
-						isWon = CheckWin(gameBoard, _hoverPiece.player);
-						cout << ScorePosition(gameBoard, _hoverPiece.player);
+						isWon = CheckWin(pieces, _hoverPiece.player);
 
-						this->_numberMoves++;
+						_numberMoves++;
 
-						// change token color for next player
-						if (_hoverPiece.color == YELLOW) {
-							// switch to human player
-							_hoverPiece.color = RED;
-							_hoverPiece.player = PLAYER;
+						// switch to other player
+						if (_hoverPiece.player == PLAYER) {
+							_hoverPiece.player = AI;
+							_hoverPiece.color = YELLOW;
 						}
 						else {
-							// switch to AI player
-							_hoverPiece.color = YELLOW;
-							_hoverPiece.player = AI;
+							_hoverPiece.player = PLAYER;
+							_hoverPiece.color = RED;
 						}
 
-						// AI's turn
-						//if (NumberOfMoves() == 5 || NumberOfMoves() == 7) {
-						//	cout << "AIS TURN" << endl;
-						//	isPlayableCol = 0;
-						//	_hoverPiece.color = YELLOW;
-						//	_hoverPiece.player = AI;
+						// AI plays
+						if (_numberMoves == 7) {
+							cout << "MOVE 8" << endl;
+							auto start = high_resolution_clock::now();
+							int bestColumn = Minimax(pieces, 6, -1000, 1000, true)[0];
+							auto end = high_resolution_clock::now();
+							auto duration = duration_cast<seconds>(end - start);
+							cout << "Best Col for AI: " << bestColumn << endl;
+							cout << "AI Execution Time: " << duration.count() << " seconds" << endl;
+							if (Board::CheckValidDrop(pieces, bestColumn)) {
+								// drop AI piece if it is valid
+								int validAiRow = Board::FindValidRow(pieces, bestColumn);
+								int bestIndex = Board::PositionToIndex(bestColumn, validAiRow);
+								pieces[bestIndex].color = YELLOW;
+								pieces[bestIndex].player = AI;
+								isWon = CheckWin(pieces, AI);
+							}
+						}
 
+						if (isWon) {
+							cout << "Beat by low IQ search tree" << endl;
+						}
 
-						//	// making best move for AI
-						//	int aiColumn = 0;
-						//	aiColumn = Minimax(gameBoard, this->NumberOfMoves(), true); // AI makes best move
-						//	isPlayableCol = gameBoard.checkValidDrop(aiColumn); // make sure move is valid
-						//	if (isPlayableCol) {
-						//		int validRow = gameBoard.findValidRow(aiColumn);
-						//		int posIndex = gameBoard.positionToIndex(aiColumn, validRow);
-
-						//		pieces[posIndex].player = AI;
-						//		isWon = CheckWin(gameBoard, aiColumn, AI);
-						//		pieces[posIndex].color = _hoverPiece.color;
-
-						//		this->_numberMoves++;
-						//	}
-
-						//	// switch to human player
-						//	_hoverPiece.color = RED;
-						//	_hoverPiece.player = PLAYER;
-						//	
-						//}
 						
 					}
 
@@ -533,7 +561,7 @@ void Game::Run() {
 		_window.clear();
 		
 		// draw everything
-		gameBoard.drawBoard();
+		gameBoard.DrawBoard();
 		_window.draw(_hoverPiece.coin);
 
 		// end current frame

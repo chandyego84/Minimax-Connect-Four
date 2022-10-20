@@ -32,34 +32,34 @@ Board::Board(sf::RenderWindow& window, int boardX, int boardY) : _window(window)
 };
 
 // get dimensions of the board
-int Board::getBoardX() const{
+int Board::GetBoardX() const{
 	return _boardX;
 }
 
-int Board::getBoardY() const {
+int Board::GetBoardY() const {
 	return _boardY;
 }
 
-int Board::getBoardXpixels() const {
+int Board::GetBoardXpixels() const {
 	return _boardXpixels;
 }
 
-sf::RectangleShape Board::getBoard() const{
+sf::RectangleShape Board::GetBoard() const{
 	return _board;
 }
 
-Piece* Board::getPieces() const {
+Piece* Board::GetPieces() const {
 	return _pieces;
 }
 
-int Board::positionToIndex(int column, int row) const{
+int Board::PositionToIndex(int column, int row){
 
-	int pos = column + (row * _boardX);  // derived formula to convert position on board to corresponding index
+	int pos = column + (row * Board::WIDTH);  // derived formula to convert position on board to corresponding index
 
 	return pos;
 }
 
-int Board::getColumnHover(int mouse_x) const{
+int Board::GetColumnHover(int mouse_x) const{
 
 	int mouse_col = 0;
 	float columnScale = 1.0 / _boardX; // for conventional board, board columns are split 1/7 each, so it will be 91 pixels each column
@@ -72,7 +72,7 @@ int Board::getColumnHover(int mouse_x) const{
 
 }
 
-void Board::setPieceColor(Piece& piece) {
+void Board::SetPieceColor(Piece& piece) {
 
 	if (piece.color != NONE) {
 		if (piece.color == RED) {
@@ -85,25 +85,38 @@ void Board::setPieceColor(Piece& piece) {
 
 }
 
-void Board::hoverPiece(Piece& currPiece, int column) {
+void Board::SetPieceColor(int color, int index) {
+
+	_pieces[index].color = color;
+
+}
+
+void Board::SetPiecePlayer(int player, int index) {
+
+	_pieces[index].player = player;
+
+}
+
+void Board::HoverPiece(Piece& currPiece, int column) {
 
 	currPiece.pos_x = 7 + (90 * column);
 	currPiece.pos_y = 15; // hovering height
-	setPieceColor(currPiece);
+	SetPieceColor(currPiece);
 	currPiece.coin.setPosition(currPiece.pos_x, currPiece.pos_y);
 
 }
 
 // checks to see whether column is playable (not full)
-bool Board::checkValidDrop(int column) const {
+
+bool Board::CheckValidDrop(int column) {
 
 	int positionIndex = 0;
 	bool validCol = false;
 
-	for (int i = _boardY - 1; i > -1; i--) {
+	for (int i = Board::HEIGHT - 1; i > -1; i--) {
 		// check pieces from bottom up
 		// turn slot's board (x,y) position into the corresponding index in array
-		positionIndex = positionToIndex(column, i);
+		positionIndex = PositionToIndex(column, i);
 		if (_pieces[positionIndex].color == NONE) {
 			// found the open slot (row)
 			validCol = true;
@@ -114,16 +127,49 @@ bool Board::checkValidDrop(int column) const {
 
 }
 
+bool Board::CheckValidDrop(const Piece* pieces, int column)  {
+
+	int positionIndex = 0;
+	bool validCol = false;
+
+	for (int i = Board::HEIGHT - 1; i > -1; i--) {
+		// check pieces from bottom up
+		// turn slot's board (x,y) position into the corresponding index in array
+		positionIndex = PositionToIndex(column, i);
+		if (pieces[positionIndex].color == NONE) {
+			// found the open slot (row)
+			validCol = true;
+		}
+	}
+
+	return validCol;
+
+}
+
+vector<int> Board::GetValidColumns(const Piece* pieces) {
+
+	vector<int> validColumns;
+
+	for (int x = 0; x < Board::WIDTH; x++) {
+		if (CheckValidDrop(pieces, x)) {
+			validColumns.push_back(x);
+		}
+	}
+
+	return validColumns;
+
+}
+
 // returns the playable row in a column
-int Board::findValidRow(int column) const {
+int Board::FindValidRow(Piece* pieces, int column) {
 	
 	int positionIndex = 0;
 
-	for (int i = _boardY - 1; i > -1; i--) {
+	for (int i = Board::HEIGHT - 1; i > -1; i--) {
 		// check pieces from bottom up
 		// turn slot's board (x,y) position into the corresponding index in array
-		positionIndex = positionToIndex(column, i);
-		if (_pieces[positionIndex].color == NONE) {
+		positionIndex = PositionToIndex(column, i);
+		if (pieces[positionIndex].color == NONE) {
 			// return the open row
 			return i;
 		}
@@ -134,21 +180,21 @@ int Board::findValidRow(int column) const {
 }
 
 // sets up (x,y) position of piece being dropped
-void Board::dropPiece(Piece& currPiece, int column, int row) {
+void Board::DropPiece(Piece& currPiece, int column, int row) {
 
 	currPiece.pos_x = column;
 	currPiece.pos_y = row;
 
 }
 
-void Board::drawBoard() {
+void Board::DrawBoard() {
 	
 	_window.draw(_board);
 
 	// draw each piece/slot on the board
 	for (int i = 0; i < _boardX * _boardY; i++) {
 		_pieces[i].coin.setPosition(7 + 90 * (_pieces[i].pos_x), 75 + 90 * (_pieces[i].pos_y));
-		setPieceColor(_pieces[i]);
+		SetPieceColor(_pieces[i]);
 
 		_window.draw(_pieces[i].coin);
 	}

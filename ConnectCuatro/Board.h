@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <vector>
 #include <SFML/Graphics.hpp>
 
 using namespace std;
@@ -20,7 +21,7 @@ enum PiecePlayer {
 
 struct Piece {
 	sf::CircleShape coin;
-	PieceColor color;
+	int color;
 	int player;
 	int pos_x;
 	int pos_y;
@@ -34,26 +35,49 @@ public:
 	// regular connect-4 board of 7x6
 	Board(sf::RenderWindow& window, int boardX = WIDTH, int boardY = HEIGHT);
 
+	// copy constructor
+	Board &operator=(const Board& rhs) {
+		this->_board = rhs._board;
+		this->_boardX = rhs._boardX;
+		this->_boardY = rhs._boardY;
+		this->_boardXpixels = rhs._boardXpixels;
+		this->_pieces = rhs._pieces;
+	}
+
 	// getters
-	int getBoardX() const;
-	int getBoardY() const;
-	int getBoardXpixels() const;
-	sf::RectangleShape getBoard() const;
-	Piece* getPieces() const;
-	int positionToIndex(int column, int row) const; 
+	int GetBoardX() const;
+	
+	int GetBoardY() const;
+	
+	int GetBoardXpixels() const;
+	
+	sf::RectangleShape GetBoard() const;
+	
+	Piece* GetPieces() const;
+
+	static vector<int> GetValidColumns(const Piece* pieces);
 
 	// setters
-	void setPieceColor(Piece& piece);
+	void SetPieceColor(Piece& piece);
+
+	void SetPieceColor(int color, int index);
+	void SetPiecePlayer(int player, int index);
 
 	// other
-	int getColumnHover(int mouse_x) const;
-	void hoverPiece(Piece& currPiece, int mouse_x);
+	int GetColumnHover(int mouse_x) const;
 
-	bool checkValidDrop(int column) const;
-	int findValidRow(int column) const;
-	void dropPiece(Piece& currPiece, int column, int row);
+	void HoverPiece(Piece& currPiece, int mouse_x);
 
-	void drawBoard();
+	bool CheckValidDrop(int column);
+	static bool CheckValidDrop(const Piece* pieces, int column);
+	
+	static int FindValidRow(Piece* pieces, int column);
+
+	static int PositionToIndex(int column, int row);
+
+	void DropPiece(Piece& currPiece, int column, int row);
+
+	void DrawBoard();
 
 
 private:
