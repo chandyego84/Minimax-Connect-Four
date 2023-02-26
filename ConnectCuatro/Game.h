@@ -53,4 +53,6 @@ private:
 	Piece _hoverPiece;
 
 	unsigned int _numberMoves;
+
+	unsigned int _AiNodesExplored;
 };

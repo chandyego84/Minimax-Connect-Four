@@ -13,6 +13,7 @@ Game::Game(sf::RenderWindow& window) : _window(window) {
 	_hoverPiece.pos_x = 0;
 	_hoverPiece.pos_y = 0;
 	_numberMoves = 0;
+	_AiNodesExplored = 0;
 
 };
 
@@ -145,6 +146,7 @@ bool Game::IsTerminalNode(const Piece* pieces) {
 // RETURNS: score, column to drop in
 int* Game::Minimax(Piece* gameState, int depth, int alpha, int beta, int maximizingPlayer) {
 
+	_AiNodesExplored++;
 	int* columnAndScore = new int[2]; // stores column to drop and the score
 
 	// if depth is zero or terminal node
@@ -536,6 +538,7 @@ void Game::Run() {
 								pieces[bestIndex].player = AI;
 								isWon = CheckWin(pieces, AI);
 							}
+							cout << "Game states explored: " << _AiNodesExplored << endl;
 						}
 
 						if (isWon) {
